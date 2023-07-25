@@ -22,7 +22,15 @@
                                 <td>{{ $user->nik }}</td>
                                 <td>{{ $user->karyawan->nama }}</td>
                                 <td>{{ $user->roles[0]->name }}</td>
+                                @if ($user->spesial)
+                                <td><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M5 12l5 5l10 -10"></path>
+                                 </svg>
                                 <td>
+                                @else
+                                <td><td>
+                                @endif
                                     {{-- <x-button-modal id="{{ $permission->id }}" title="Ubah Data" />
                                         <x-modal id="{{ $permission->id }}" title="Ubah Data">
                                           <form action="{{ route('admin.permission.update', $permission->id) }}"
@@ -71,7 +79,7 @@
                     </x-select>
                     <div class="mt-3 special-approve" style="display: none">
                         <label class="switch">
-                            <input type="checkbox" name="special_approve" value="true">
+                            <input type="checkbox" name="spesial" value="1">
                             <span class="slider round">Has Special Approve</span>
                         </label>
                     </div>

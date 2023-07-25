@@ -22,7 +22,7 @@ class User extends Authenticatable
         'nik',
         'id_kary',
         'password',
-        'special_approve',
+        'spesial',
     ];
 
     /**

@@ -23,12 +23,28 @@ class IjinController extends Controller
      */
     public function index()
     {
-        $karyawan = Karyawan::all();
-        $izin = Absen::when(request()->search, function($search){
-            $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
-        })->with('karyawan')->paginate(10);
+        
         $absen = JenisAbsen::all();
-
+        if(Auth::user()->hasRole('user') AND Auth::user()->spesial == 1){
+            $karyawan = Karyawan::where('user_appr', Auth::user()->id)->orWhere('id', Auth::user()->id_kary)->get();
+            $izin = Absen::when(request()->search, function($search){
+                $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
+            })->whereHas('karyawan', function($query){
+                return $query->where('user_appr', '=', Auth::user()->id);
+            })->orWhere('id_kary', Auth::user()->id_kary)->paginate(10);
+        }elseif (Auth::user()->hasRole('user')) {
+            $karyawan = Karyawan::where('id', Auth::user()->id_kary)->get();
+            $izin = Absen::when(request()->search, function($search){
+                $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
+            })->Where('id_kary', Auth::user()->id_kary)->paginate(10);
+        }
+        else{
+            $karyawan = Karyawan::all();
+            $izin = Absen::when(request()->search, function($search){
+                $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
+            })->with('karyawan')->paginate(10);
+        }
+        
         return view('admin.izin.index', compact('karyawan', 'izin', 'absen'));
     }
 
@@ -75,7 +91,7 @@ class IjinController extends Controller
             "tanggal_akhir" => $request->tanggal_akhir,
             "jumlah_hari" => $tanggal_akhir->Diff($tanggal_awal)->days + 1,
             "keterangan" => $request->keterangan,
-            "status" => "Submitted"
+            "status" => "Pending"
         ]);
 
         return redirect(route('admin.absens.index'))->with('success', "permohonan telah diteruskan kepada ".$karyawan[0]->user->karyawan->nama);
@@ -88,7 +104,16 @@ class IjinController extends Controller
         $absen->approv_by = Auth::user()->id; 
         $absen->update();
 
-        return back()->with('toast_success', 'Berhasil Approve permohonan dengan nomor '. $absen->kode_form);
+        return back()->with('toast_success', 'Berhasil APPROVE permohonan dengan nomor '. $absen->kode_form);
+    }
+
+    public function rejected(Absen $absen)
+    {
+        $absen->status = "Rejected";
+        $absen->reject_by = Auth::user()->id; 
+        $absen->update();
+
+        return back()->with('toast_success', 'Berhasil REJECT permohonan dengan nomor '. $absen->kode_form);
     }
 
     /**
