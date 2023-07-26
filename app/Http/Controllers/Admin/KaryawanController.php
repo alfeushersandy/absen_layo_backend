@@ -32,7 +32,7 @@ class KaryawanController extends Controller
      */
     public function create()
     {
-        $users = User::with(['karyawan'])->get();
+        $users = User::with(['karyawan'])->role(['super-admin', 'admin'])->orWhere('spesial', 1)->get();
         $dept = Departemen::all();
 
         return view('admin.karyawan.create', compact('users', 'dept'));

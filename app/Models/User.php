@@ -8,8 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -22,7 +23,7 @@ class User extends Authenticatable
         'nik',
         'id_kary',
         'password',
-        'special_approve',
+        'spesial',
     ];
 
     /**
@@ -49,5 +50,25 @@ class User extends Authenticatable
     public function karyawan()
     {
         return $this->belongsTo(Karyawan::class, 'id_kary', 'id');
+    }
+
+    /**
+     * getJWTIdentifier
+     *
+     * @return void
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+        
+    /**
+     * getJWTCustomClaims
+     *
+     * @return void
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

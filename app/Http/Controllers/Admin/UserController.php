@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Karyawan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['role:super-admin']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -59,7 +64,6 @@ class UserController extends Controller
         ]);
 
         $karyawan = Karyawan::find($request->id_kary);
-
         /**
          * Create user
          */
@@ -67,14 +71,14 @@ class UserController extends Controller
             'nik'     => $karyawan->nik_karyawan,
             'id_kary'     => $karyawan->id,
             'password' => bcrypt($request->password),
-            'special' => $request->special_approve
+            'spesial' => $request->input('spesial')
         ]);
 
         //assign roles to user
         $user->assignRole($request->roles);
 
         //asign special permission
-        if($request->special_approve){
+        if($request->input('spesial')){
             $permission = Permission::whereIn('id', [11,16])->get();
             foreach ($permission as $approve) {
                 $user->givePermissionTo($approve->id);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\JenisAbsenController;
 use App\Http\Controllers\Admin\JenisIzinController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ReportIjinController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function(){
@@ -37,4 +38,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], 
     Route::resource('/users', UserController::class);
     Route::resource('/absens', IjinController::class);
     Route::get('/absens/{absen}/approve', [IjinController::class, 'approve'])->name('absens.approve');
+    Route::get('/absens/{absen}/rejected', [IjinController::class, 'rejected'])->name('absens.reject');
+    Route::controller(ReportIjinController::class)->prefix('/report')->as('report.')->group(function(){
+        Route::get('/index', 'index')->name('index');
+        Route::get('/filter', 'filter')->name('filter');
+      });
 });

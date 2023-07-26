@@ -23,11 +23,20 @@ class IjinController extends Controller
      */
     public function index()
     {
-        $karyawan = Karyawan::all();
-        $izin = Absen::when(request()->search, function($search){
-            $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
-        })->with('karyawan')->paginate(10);
         $absen = JenisAbsen::all();
+        if(Auth::user()->hasRole('super-admin') || Auth::user()->hasRole('admin')){
+            $karyawan = Karyawan::all();
+            $izin = Absen::when(request()->search, function($search){
+                $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
+            })->with('karyawan')->paginate(10);
+        }else{
+            $karyawan = Karyawan::where('user_appr', Auth::user()->id)->orWhere('id', Auth::user()->id_kary)->get();
+            $izin = Absen::when(request()->search, function($search){
+                $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
+            })->with('karyawan')->where('id_kary', Auth::user()->id_kary)->whereHas('karyawan', function($q){
+                $q->where('user_appr', Auth::user()->id);
+            })->paginate(10);
+        }
 
         return view('admin.izin.index', compact('karyawan', 'izin', 'absen'));
     }
@@ -75,7 +84,7 @@ class IjinController extends Controller
             "tanggal_akhir" => $request->tanggal_akhir,
             "jumlah_hari" => $tanggal_akhir->Diff($tanggal_awal)->days + 1,
             "keterangan" => $request->keterangan,
-            "status" => "Submitted"
+            "status" => "Pending"
         ]);
 
         return redirect(route('admin.absens.index'))->with('success', "permohonan telah diteruskan kepada ".$karyawan[0]->user->karyawan->nama);
@@ -84,11 +93,25 @@ class IjinController extends Controller
 
     public function approve(Absen $absen)
     {
-        $absen->status = "Approved";
-        $absen->approv_by = Auth::user()->id; 
+        if(Auth::user()->id_kary == $absen->id_kary){
+            return back()->with('warning', 'anda tidak dapat memproses ijin anda sendiri');
+        }else{
+            $absen->status = "Approved";
+            $absen->approv_by = Auth::user()->id; 
+            $absen->update();
+    
+            return back()->with('toast_success', 'Berhasil Approve permohonan dengan nomor '. $absen->kode_form);
+
+        }
+    }
+
+    public function rejected(Absen $absen)
+    {
+        $absen->status = "Rejected";
+        $absen->reject_by = Auth::user()->id; 
         $absen->update();
 
-        return back()->with('toast_success', 'Berhasil Approve permohonan dengan nomor '. $absen->kode_form);
+        return back()->with('toast_success', 'permohonan dengan nomor '. $absen->kode_form. 'telah direject');
     }
 
     /**
