@@ -38,7 +38,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], 
     Route::resource('/users', UserController::class);
     Route::resource('/absens', IjinController::class);
     Route::get('/absens/{absen}/approve', [IjinController::class, 'approve'])->name('absens.approve');
-    Route::get('/absens/{absen}/rejected', [IjinController::class, 'rejected'])->name('absens.reject');
+    Route::get('/absens/{absen}/reject', [IjinController::class, 'rejected'])->name('absens.reject');
     Route::controller(ReportIjinController::class)->prefix('/report')->as('report.')->group(function(){
         Route::get('/index', 'index')->name('index');
         Route::get('/filter', 'filter')->name('filter');
