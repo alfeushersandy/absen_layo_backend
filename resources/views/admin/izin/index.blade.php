@@ -52,9 +52,9 @@
                         @foreach ($izin as $i => $ijin)
                             <tr>
                                 <td>{{$i + $izin->firstItem()}}</td>
-                                <td>{{$ijin->karyawan[0]->nik_karyawan}}</td>
-                                <td>{{$ijin->karyawan[0]->nama}}</td>
-                                <td>{{$ijin->jenisAbsen[0]->nama_abs}}</td>
+                                <td>{{$ijin->karyawan->nik_karyawan}}</td>
+                                <td>{{$ijin->karyawan->nama}}</td>
+                                <td>{{$ijin->jenisAbsen->nama_abs}}</td>
                                 <td>{{$ijin->tanggal_awal}}</td>
                                 <td>{{$ijin->tanggal_akhir}}</td>
                                 <td>{{$ijin->jumlah_hari}}</td>
