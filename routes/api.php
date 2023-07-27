@@ -24,4 +24,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('api.customer.logi
 Route::post('/register', [AuthController::class, 'register'])->name('api.customer.register');
 Route::get('/user', [AuthController::class, 'getUser'])->name('api.customer.user');
 
+Route::get('/absen', [AbsenController::class, 'index'])->name('api.absen.index');
+
 

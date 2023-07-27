@@ -14,11 +14,11 @@ class Absen extends Model
 
     public function karyawan()
     {
-        return $this->hasMany(Karyawan::class, 'id', 'id_kary');
+        return $this->hasOne(Karyawan::class, 'id', 'id_kary');
     }
 
     public function jenisAbsen() 
     {
-        return $this->hasMany(JenisAbsen::class, 'id', 'abs_id');
+        return $this->hasOne(JenisAbsen::class, 'id', 'abs_id');
     }
 }
