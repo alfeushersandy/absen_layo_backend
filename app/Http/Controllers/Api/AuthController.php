@@ -33,11 +33,11 @@ class AuthController extends Controller
         if(!$token){
             return response()->json([
                 'success' => false,
-                'message' => "email or password incorect!"
+                'message' => "nik or password incorect!"
             ], 401);
         }
 
-        $user = User::with('karyawan')->find(Auth::guard('api')->id());
+        $user = User::with(['karyawan', 'roles'])->find(Auth::guard('api')->id());
         return response()->json([
             'success' => true,
             'user'    => $user,  
@@ -47,7 +47,7 @@ class AuthController extends Controller
 
     public function getUser()
     {
-        $user = User::with('karyawan')->find(Auth::id());
+        $user = User::with(['karyawan', 'roles'])->find(Auth::id());
         return response()->json([
                 'success' => true,
                 'user'    => $user

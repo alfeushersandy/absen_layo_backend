@@ -25,5 +25,9 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.custome
 Route::get('/user', [AuthController::class, 'getUser'])->name('api.customer.user');
 
 Route::get('/absen', [AbsenController::class, 'index'])->name('api.absen.index');
+Route::get('/karyawan', [AbsenController::class, 'getKaryawan'])->name('api.absen.getkaryawan');
+Route::get('/jenisAbsen', [AbsenController::class, 'getJenisAbsen'])->name('api.absen.getJenisAbsen');
+Route::post('/absen', [AbsenController::class, 'store'])->name('api.absen.store');
+Route::put('/absen/{id}', [AbsenController::class, 'approve'])->name('api.absen.approve');
 
 
