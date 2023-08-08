@@ -49,9 +49,10 @@ class KaryawanController extends Controller
         Karyawan::create([
             'nik_karyawan' => $request->nik_karyawan,
             'nama' => $request->nama,
-            'tanggal_join' => $request->tanggal_join,
+            'section' => $request->section,
             'departemen_id' => $request->departemen_id,
             'user_appr' => $request->user_approve,
+            'jabatan' => $request->jabatan,
         ]);
 
         return redirect(route('admin.karyawans.index'))->with('toast_success', 'Data karyawan berhasil disimpan');
@@ -94,8 +95,9 @@ class KaryawanController extends Controller
         $karyawan->update([
             'nik_karyawan' => $request->nik_karyawan,
             'nama' => $request->nama,
-            'tanggal_join' => $request->tanggal_join,
+            'section' => $request->section,
             'departemen_id' => $request->departemen_id,
+            'jabatan' => $request->jabatan,
             'user_appr' => $request->user_approve,
         ]);
 

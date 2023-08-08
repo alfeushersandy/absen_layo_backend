@@ -98,6 +98,7 @@
                 </x-widget>
             </div>            
         @endcan
+        @can('dashboard.lembur')
         <p>Lembur</p>
         <div class="col-6 col-lg-3">
             <x-widget title="Request" subtitle="" class="bg-azure">
@@ -144,5 +145,6 @@
                  </svg>
             </x-widget>
         </div>
+        @endcan
     </x-container>
 @endsection

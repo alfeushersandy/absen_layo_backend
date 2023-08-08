@@ -122,10 +122,24 @@ class AbsenController extends Controller
         $user = User::find(auth()->user()->id);
         $absen = Absen::find($id);
 
-        $absen->status = "Rejected";
-        $absen->reject_by = $user->id; 
-        $absen->update();
+        if($absen->id_kary == $user->id_kary){
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak diperkenankan untuk memproses Ijin anda sendiri',
+                'absen' => '',
+            ]);
+        }else{
+            $absen->status = "Rejected";
+            $absen->reject_by = $user->id; 
+            $absen->update();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil Reject permohonan dengan nomor '. $absen->kode_form,
+                'absen' => $absen,
+                'user' => $user
+            ]);
 
-        return back()->with('toast_success', 'permohonan dengan nomor '. $absen->kode_form. 'telah direject');
+        }
     }
 }

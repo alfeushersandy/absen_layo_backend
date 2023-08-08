@@ -24,7 +24,8 @@
                             <th>NIK</th>
                             <th>Nama</th>
                             <th>Departemen</th>
-                            <th>Tanggal Join</th>
+                            <th>Section</th>
+                            <th>Jabatan</th>
                             <th>Aproval</th>
                             <th>Aksi</th>
                         </tr>
@@ -36,8 +37,9 @@
                                 <td>{{ $karyawan->nik_karyawan }}</td>
                                 <td>{{ $karyawan->nama }}</td>
                                 <td>{{ $karyawan->departemen->nama_dept }}</td>
-                                <td>{{ date('d-m-Y', strtotime($karyawan->tanggal_join))}}</td>
-                                <td>{{$karyawan->user->nik}} - {{ $karyawan->user->karyawan->nama }}</td>
+                                <td>{{ $karyawan->section}}</td>
+                                <td>{{ $karyawan->jabatan}}</td>
+                                <td>{{ $karyawan->user ? $karyawan->user->nik . " | " .  $karyawan->user->karyawan->nama : '' }}</td>
                                 <td>
                                         @can('karyawan.edit')
                                         <a href="{{ route('admin.karyawans.edit', $karyawan->id) }}"
@@ -66,7 +68,7 @@
                     </tbody>
                 </x-table>
             </x-card-action>
-            <div class="d-flex justify-content-end">{{ $karyawans->links() }}</div>
+            <div class="d-flex justify-content-end">{{ $karyawans->links('vendor.pagination.bootstrap-5') }}</div>
         </div>
     </x-container>
 @endsection

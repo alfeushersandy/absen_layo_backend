@@ -3,16 +3,18 @@
 @section('content')
     <x-container>
         <div>
-            <x-button-modal id="import1" title="Import File" class="mb-3"/>
-                    <x-modal id="import1" title="Import File">
-                      <form action="{{ route('admin.check.import') }}"
-                      method="POST" enctype="multipart/form-data">
-                        @csrf
-                          <x-input title="Import File" name="file" type="file"
-                          placeholder="" value=""/>
-                          <x-button-save title="Upload" />
-                      </form>
-                    </x-modal>
+            @can('absen.upload')
+                <x-button-modal id="import1" title="Import File" class="mb-3"/>
+                        <x-modal id="import1" title="Import File">
+                        <form action="{{ route('admin.check.import') }}"
+                        method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <x-input title="Import File" name="file" type="file"
+                            placeholder="" value=""/>
+                            <x-button-save title="Upload" />
+                        </form>
+                        </x-modal>
+            @endcan
             <x-card-action title="Daftar Check Clock" url="">
                 @if($message = Session::get('success'))
                 <div class="alert alert-success" role="alert">
@@ -58,7 +60,7 @@
                     </tbody>
                 </x-table>
                 <div class="d-flex justify-content-center mt-4">
-                    {{ $check->links('vendor.pagination.bootstrap-4') }}
+                    {{ $check->links('vendor.pagination.bootstrap-5') }}
                 </div>
             </x-card-action>
         </div>

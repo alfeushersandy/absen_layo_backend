@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Imports\CheckClockImport;
 use App\Models\CheckClock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -18,7 +19,13 @@ class AbsenController extends Controller
      */
     public function index()
     {
-        $check = CheckClock::latest()->paginate(10)->withQueryString();
+        if(Auth::user()->hasRole('super-admin') || Auth::user()->hasRole('admin')){
+            $check = CheckClock::latest()->paginate(10)->withQueryString();
+        }else{
+            $check = CheckClock::whereHas('karyawan', function($q){
+                $q->where('nama', Auth::user()->karyawan->nama);
+            })->latest()->paginate(10)->withQueryString();
+        }
         return view('admin.absen.index', compact('check'));
     }
 

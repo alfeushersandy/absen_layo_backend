@@ -19,8 +19,8 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <x-input title="Tanggal Join" name="tanggal_join" type="date" placeholder=""
-                                value="{{ $karyawan->tanggal_join }}" />
+                            <x-input title="Section" name="section" type="text" placeholder=""
+                                value="{{ $karyawan->section }}" />
                         </div>
                         <div class="col-6">
                             <x-select title="Departemen" name="departemen_id">
@@ -36,10 +36,14 @@
 
                     <div class="row">
                         <div class="col-6">
+                            <x-input title="Jabatan" name="jabatan" type="text" placeholder=""
+                                value="{{ $karyawan->jabatan }}" />
+                        </div>
+                        <div class="col-6">
                             <x-select title="User Approve" name="user_approve">
                                 <option value="" selected>Pilih User Approve</option>
                                 @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" @selected($karyawan->user_appr == $user->id)>
+                                    <option value="{{ $user->nik }}" @selected($karyawan->user_appr == $user->nik)>
                                         {{$user->nik}} - {{ $user->karyawan->nama }}
                                     </option>
                                 @endforeach

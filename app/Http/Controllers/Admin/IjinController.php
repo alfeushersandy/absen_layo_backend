@@ -29,13 +29,18 @@ class IjinController extends Controller
             $izin = Absen::when(request()->search, function($search){
                 $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
             })->with('karyawan')->paginate(10);
-        }else{
-            $karyawan = Karyawan::where('user_appr', Auth::user()->id)->orWhere('id', Auth::user()->id_kary)->get();
+        }else if (Auth::user()->spesial ) {
+            $karyawan = Karyawan::where('user_appr', Auth::user()->nik)->orWhere('id', Auth::user()->id_kary)->get();
             $izin = Absen::when(request()->search, function($search){
                 $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
             })->with('karyawan')->where('id_kary', Auth::user()->id_kary)->whereHas('karyawan', function($q){
-                $q->where('user_appr', Auth::user()->id);
+                $q->where('user_appr', Auth::user()->nik);
             })->paginate(10);
+        }else{
+            $karyawan = Karyawan::where('id', Auth::user()->id_kary)->get();
+            $izin = Absen::when(request()->search, function($search){
+                $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
+            })->with('karyawan')->where('id_kary', Auth::user()->id_kary)->paginate(10);
         }
 
         return view('admin.izin.index', compact('karyawan', 'izin', 'absen'));
