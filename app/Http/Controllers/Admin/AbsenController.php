@@ -20,11 +20,15 @@ class AbsenController extends Controller
     public function index()
     {
         if(Auth::user()->hasRole('super-admin') || Auth::user()->hasRole('admin')){
-            $check = CheckClock::latest()->paginate(10)->withQueryString();
+            $check = CheckClock::when(request()->search, function($search){
+                $search = $search->where('nama', 'like', '%'. request()->search. '%');
+            })->latest()->paginate(10)->appends(request()->search)->withQueryString();
         }else{
-            $check = CheckClock::whereHas('karyawan', function($q){
+            $check = CheckClock::when(request()->search, function($search){
+                $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
+            })->whereHas('karyawan', function($q){
                 $q->where('nama', Auth::user()->karyawan->nama);
-            })->latest()->paginate(10)->withQueryString();
+            })->latest()->paginate(10)->appends(request()->search)->withQueryString();
         }
         return view('admin.absen.index', compact('check'));
     }

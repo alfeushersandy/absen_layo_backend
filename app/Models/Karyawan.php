@@ -9,7 +9,7 @@ class Karyawan extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nik_karyawan', 'nama', 'tanggal_join', 'departemen_id', 'user_appr'
+        'nik_karyawan', 'nama', 'tanggal_join', 'departemen_id', 'user_appr', 'section', 'jabatan'
     ];
 
     public function user()

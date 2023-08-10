@@ -15,7 +15,7 @@
                         </form>
                         </x-modal>
             @endcan
-            <x-card-action title="Daftar Check Clock" url="">
+            <x-card-action title="Daftar Check Clock" url="{{ route('admin.check.index') }}">
                 @if($message = Session::get('success'))
                 <div class="alert alert-success" role="alert">
                     {{ $message }}

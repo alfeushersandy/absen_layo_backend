@@ -78,6 +78,10 @@
                                 <td>{{$ijin->keterangan}}</td>
                                 <td width="58px">
                                     @if ($ijin->status == "Pending")
+                                    @can('delete-izin', $ijin)
+                                    <x-button-delete id="{{ $ijin->id }}" title="Delete"
+                                        url="{{ route('admin.absens.destroy', $ijin->id) }}" />
+                                    @endcan
                                     @can('absen.approve')
                                     <a href="{{route('admin.absens.approve', $ijin->id)}}" class="btn btn-success btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-ipad-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -97,7 +101,39 @@
                                             <path d="M9 17h4"></path>
                                          </svg>
                                          Reject
-                                    </a>                                          
+                                    </a>
+                                    @endcan
+                                    @can('update-izin', $ijin)
+                                    <x-button-modal id="{{ $ijin->id }}" title="Edit" />
+                                        <x-modal id="{{ $ijin->id }}" title="Edit">
+                                          <form action="{{ route('admin.absens.update', $ijin->id) }}"
+                                          method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <x-select title="Karyawan" name="id_kary">
+                                                <option value="" selected>Pilih Karyawan</option>
+                                                @foreach ($karyawan as $kar)
+                                                    <option value="{{ $kar->id }}" @selected($kar->id == $ijin->id_kary)>
+                                                        {{ $kar->nik_karyawan }} - {{ $kar->nama }}
+                                                    </option>
+                                                @endforeach
+                                            </x-select>
+                                            <x-select title="Jenis Izin" name="abs_id" data-live-search="true">
+                                                <option value="" selected>Pilih Jenis Izin</option>
+                                                @foreach ($absen as $abs)
+                                                    <option value="{{ $abs->id }}" @selected($abs->id == $ijin->abs_id)>
+                                                        {{ $abs->nama_abs }}
+                                                    </option>
+                                                @endforeach
+                                            </x-select>
+                                            <x-input title="Tanggal Ijin" name="tanggal_awal" type="date" placeholder=""
+                                            value="{{$ijin->tanggal_awal}}"/>
+                                            <x-input title="Sampai Dengan" name="tanggal_akhir" type="date" placeholder=""
+                                            value="{{$ijin->tanggal_akhir}}" />
+                                            <x-textarea title="Keterangan" name="keterangan" placeholder="">{{$ijin->keterangan}}</x-textarea>
+                                            <x-button-save title="Simpan" />
+                                          </form>
+                                        </x-modal>  
                                     @endcan
                                     @elseif ($ijin->status == "Rejected")
                                     <a href="{{route('admin.absens.approve', $ijin->id)}}" class="btn btn-danger btn-sm">

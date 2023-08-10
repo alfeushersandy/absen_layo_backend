@@ -29,19 +29,20 @@ class IjinController extends Controller
             $izin = Absen::when(request()->search, function($search){
                 $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
             })->with('karyawan')->paginate(10);
-        }else if (Auth::user()->spesial ) {
+        }else if(Auth::user()->spesial == true) {
             $karyawan = Karyawan::where('user_appr', Auth::user()->nik)->orWhere('id', Auth::user()->id_kary)->get();
             $izin = Absen::when(request()->search, function($search){
                 $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
-            })->with('karyawan')->where('id_kary', Auth::user()->id_kary)->whereHas('karyawan', function($q){
+            })->with('karyawan')->whereHas('karyawan', function($q){
                 $q->where('user_appr', Auth::user()->nik);
-            })->paginate(10);
+            })->orWhere('id_kary', '=', Auth::user()->id_kary)->paginate(10);
         }else{
             $karyawan = Karyawan::where('id', Auth::user()->id_kary)->get();
             $izin = Absen::when(request()->search, function($search){
                 $search = $search->where('id_kary', 'like', '%'. request()->search. '%');
             })->with('karyawan')->where('id_kary', Auth::user()->id_kary)->paginate(10);
         }
+
 
         return view('admin.izin.index', compact('karyawan', 'izin', 'absen'));
     }
@@ -150,7 +151,20 @@ class IjinController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tanggal_awal = new DateTime($request->tanggal_awal);
+        $tanggal_akhir = new DateTime($request->tanggal_akhir);
+        $izin = Absen::find($id);
+
+        $izin->update([
+            "id_kary" => $request->id_kary,
+            "abs_id" => $request->abs_id,
+            "tanggal_awal" => $request->tanggal_awal,
+            "tanggal_akhir" => $request->tanggal_akhir,
+            "jumlah_hari" => $tanggal_akhir->Diff($tanggal_awal)->days + 1,
+            "keterangan" => $request->keterangan,
+        ]);
+
+        return redirect(route('admin.absens.index'))->with('success', "berhasil Mengupdate data");
     }
 
     /**
@@ -161,6 +175,9 @@ class IjinController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $izin = Absen::find($id);
+        $izin->delete();
+
+        return redirect(route('admin.absens.index'))->with('toast_success', "Berhasil Menghapus Izin dengan nomor ". $izin->kode_form);
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use App\Models\Absen;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,6 +27,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('update-izin', function (User $user, Absen $absen) {
+            return $user->id_kary === $absen->id_kary || $user->hasRole('super-admin');
+        });
+
+        Gate::define('delete-izin', function (User $user, Absen $absen) {
+            return $user->id_kary === $absen->id_kary || $user->hasRole('super-admin|admin');
+        });
     }
 }
