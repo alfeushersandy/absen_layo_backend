@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\DepartemenController;
 use App\Http\Controllers\Admin\IjinController;
 use App\Http\Controllers\Admin\JenisAbsenController;
 use App\Http\Controllers\Admin\JenisIzinController;
+use App\Http\Controllers\Admin\JenisLemburController;
 use App\Http\Controllers\Admin\KaryawanController;
+use App\Http\Controllers\Admin\LemburController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ReportIjinController;
 use App\Http\Controllers\Admin\RoleController;
@@ -37,6 +39,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], 
     Route::resource('/departemen', DepartemenController::class);
     Route::resource('/jenisizin', JenisIzinController::class);
     Route::resource('/jenisabsen', JenisAbsenController::class);
+    Route::resource('/jenislembur', JenisLemburController::class);
+    Route::resource('/lemburs', LemburController::class);
     Route::resource('/users', UserController::class);
     Route::resource('/absens', IjinController::class);
     Route::get('/absens/{absen}/approve', [IjinController::class, 'approve'])->name('absens.approve');
