@@ -53,6 +53,29 @@ class LemburController extends Controller
         //
     }
 
+    public function approve(Lembur $lembur)
+    {
+        if(Auth::user()->id_kary == $lembur->id_kary){
+            return back()->with('warning', 'anda tidak dapat memproses ijin anda sendiri');
+        }else{
+            $lembur->status = "Approved";
+            $lembur->approv_by = Auth::user()->id; 
+            $lembur->update();
+    
+            return back()->with('toast_success', 'Berhasil Approve permohonan dengan nomor '. $lembur->kode_form_lembur);
+
+        }
+    }
+
+    public function rejected(Lembur $lembur)
+    {
+        $lembur->status = "Rejected";
+        $lembur->reject_by = Auth::user()->id; 
+        $lembur->update();
+
+        return back()->with('toast_success', 'permohonan dengan nomor '. $lembur->kode_form_lembur. 'telah direject');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -70,7 +93,7 @@ class LemburController extends Controller
         ]);
 
         $lembur = Lembur::latest()->first() ?? new Lembur();
-        $kode_form = substr($lembur->kode_form,6);
+        $kode_form = substr($lembur->kode_form_lembur,7);
         $kode_form_final = (int) $kode_form +1;
 
         //hitung lembur 
@@ -88,7 +111,7 @@ class LemburController extends Controller
         $karyawan = Karyawan::with('user')->where('karyawans.id', $request->id_kary)->get();
         
         Lembur::create([
-            "kode_form_lembur" => 'LYSF-L'.$kode_form_final,
+            "kode_form_lembur" => 'LYSF-L-'.$kode_form_final,
             "id_kary" => $request->id_kary,
             "jenis_lembur" => $request->jenis_lembur,
             "dari" => $request->dari,
@@ -100,7 +123,7 @@ class LemburController extends Controller
             "status" => "Pending"
         ]);
 
-        return redirect(route('admin.absens.index'))->with('success', "permohonan Lembur telah diteruskan kepada ".$karyawan[0]->user->karyawan->nama);
+        return redirect(route('admin.lemburs.index'))->with('success', "permohonan Lembur telah diteruskan kepada ".$karyawan[0]->user->karyawan->nama);
     }
 
     /**
@@ -134,7 +157,29 @@ class LemburController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //hitung lembur 
+        $dari = strtotime($request->dari);
+        $sampai = strtotime($request->sampai);
+        $break = $request->break*60;
+
+        //hitung selisih dalam detik 
+        $diff = ($sampai-$dari)-$break;
+
+        //membagi detik menjadi jam
+        $jam_lembur = floor($diff / (60 * 60));
+        $lembur = Lembur::find($id);
+
+        $lembur->update([
+            "jenis_lembur" => $request->jenis_lembur,
+            "dari" => $request->dari,
+            "sampai" => $request->sampai,
+            "istirahat" => $request->break,
+            "jam" => $jam_lembur,
+            "tanggal" => $request->tanggal,
+            "keterangan" => $request->keterangan,
+        ]);
+
+        return redirect(route('admin.lemburs.index'))->with('toast_success', "berhasil Mengupdate data");
     }
 
     /**
@@ -145,6 +190,9 @@ class LemburController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $lembur = Lembur::find($id);
+        $lembur->delete();
+
+        return redirect(route('admin.lemburs.index'))->with('toast_success', "Berhasil Menghapus Izin dengan nomor ". $lembur->kode_form_lembur);
     }
 }

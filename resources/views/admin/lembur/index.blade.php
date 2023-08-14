@@ -89,12 +89,12 @@
                                 <td>{{$ijin->keterangan}}</td>
                                 <td width="58px">
                                     @if ($ijin->status == "Pending")
-                                    {{-- @can('delete-izin', $ijin)
+                                    @can('delete-lembur', $ijin)
                                     <x-button-delete id="{{ $ijin->id }}" title="Delete"
                                         url="{{ route('admin.lemburs.destroy', $ijin->id) }}" />
-                                    @endcan --}}
+                                    @endcan
                                     @can('absen.approve')
-                                    <a href="{{route('admin.absens.approve', $ijin->id)}}" class="btn btn-success btn-sm">
+                                    <a href="{{route('admin.lemburs.approve', $ijin->id)}}" class="btn btn-success btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-ipad-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                             <path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v8"></path>
@@ -103,7 +103,7 @@
                                          </svg>
                                          Approve
                                     </a> 
-                                    <a href="{{route('admin.absens.reject', $ijin->id)}}" class="btn btn-danger btn-sm">
+                                    <a href="{{route('admin.lemburs.reject', $ijin->id)}}" class="btn btn-danger btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-ipad-horizontal-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                             <path d="M13.5 20h-8.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7"></path>
@@ -114,10 +114,10 @@
                                          Reject
                                     </a>
                                     @endcan
-                                    {{-- @can('update-izin', $ijin)
+                                    @can('update-lembur', $ijin)
                                     <x-button-modal id="{{ $ijin->id }}" title="Edit" />
                                         <x-modal id="{{ $ijin->id }}" title="Edit">
-                                          <form action="{{ route('admin.absens.update', $ijin->id) }}"
+                                          <form action="{{ route('admin.lemburs.update', $ijin->id) }}"
                                           method="POST">
                                             @csrf
                                             @method('PUT')
@@ -129,23 +129,33 @@
                                                     </option>
                                                 @endforeach
                                             </x-select>
-                                            <x-select title="Jenis Izin" name="abs_id" data-live-search="true">
-                                                <option value="" selected>Pilih Jenis Izin</option>
-                                                @foreach ($absen as $abs)
-                                                    <option value="{{ $abs->id }}" @selected($abs->id == $ijin->abs_id)>
-                                                        {{ $abs->nama_abs }}
+                                            <x-select title="Jenis Lembur" name="jenis_lembur" data-live-search="true">
+                                                <option value="" selected>Pilih Jenis Lembur</option>
+                                                @foreach ($jenislembur as $abs)
+                                                    <option value="{{ $abs->id }}" @selected($abs->id == $ijin->jenis_lembur)>
+                                                        {{ $abs->jenis_lembur }}
                                                     </option>
                                                 @endforeach
                                             </x-select>
-                                            <x-input title="Tanggal Ijin" name="tanggal_awal" type="date" placeholder=""
-                                            value="{{$ijin->tanggal_awal}}"/>
-                                            <x-input title="Sampai Dengan" name="tanggal_akhir" type="date" placeholder=""
-                                            value="{{$ijin->tanggal_akhir}}" />
-                                            <x-textarea title="Keterangan" name="keterangan" placeholder="">{{$ijin->keterangan}}</x-textarea>
+                                            <x-input title="Tanggal Lembur" name="tanggal" type="date" placeholder="Masukan tanggal lembur"
+                                            value="{{$ijin->tanggal}}"/>
+                                            <x-input title="Dari" name="dari" type="time" placeholder="00:00"
+                                            value="{{$ijin->dari}}" />
+                                            <x-input title="Sampai" name="sampai" type="time" placeholder="00:00"
+                                            value="{{$ijin->sampai}}" />
+                                            <x-select title="Break" name="break" value="{{$ijin->istirahat}}">
+                                                <option value="">Pilih Dalam Menit</option>
+                                                <option value="0" {{ $ijin->istirahat == '0' ? 'selected' : '' }}>Tanpa Istirahat</option>
+                                                <option value="30" {{ $ijin->istirahat == '30' ? 'selected' : '' }}>30 Menit</option>
+                                                <option value="60" {{ $ijin->istirahat == '60' ? 'selected' : '' }}>60 Menit</option>
+                                                <option value="90" {{ $ijin->istirahat == '90' ? 'selected' : '' }}>90 Menit</option>
+                                                <option value="120" {{ $ijin->istirahat == '120' ? 'selected' : '' }}>120 Menit</option>
+                                            </x-select>
+                                            <x-textarea title="Masukkan Keterangan Lembur" name="keterangan" placeholder="">{{$ijin->keterangan}}</x-textarea>
                                             <x-button-save title="Simpan" />
                                           </form>
                                         </x-modal>  
-                                    @endcan --}}
+                                    @endcan
                                     @elseif ($ijin->status == "Rejected")
                                     <a href="{{route('admin.absens.approve', $ijin->id)}}" class="btn btn-danger btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-zoom-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">

@@ -41,6 +41,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], 
     Route::resource('/jenisabsen', JenisAbsenController::class);
     Route::resource('/jenislembur', JenisLemburController::class);
     Route::resource('/lemburs', LemburController::class);
+    Route::get('/lemburs/{lembur}/approve', [LemburController::class, 'approve'])->name('lemburs.approve');
+    Route::get('/lemburs/{lembur}/reject', [LemburController::class, 'rejected'])->name('lemburs.reject');
     Route::resource('/users', UserController::class);
     Route::resource('/absens', IjinController::class);
     Route::get('/absens/{absen}/approve', [IjinController::class, 'approve'])->name('absens.approve');
