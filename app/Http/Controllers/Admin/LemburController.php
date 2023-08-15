@@ -193,6 +193,6 @@ class LemburController extends Controller
         $lembur = Lembur::find($id);
         $lembur->delete();
 
-        return redirect(route('admin.lemburs.index'))->with('toast_success', "Berhasil Menghapus Izin dengan nomor ". $lembur->kode_form_lembur);
+        return redirect(route('admin.lemburs.index'))->with('toast_success', "Berhasil Menghapus Lembur dengan nomor ". $lembur->kode_form_lembur);
     }
 }

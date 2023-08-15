@@ -15,14 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'getUser']);
 
 /**
  * Route API Auth
  */
 Route::post('/login', [AuthController::class, 'login'])->name('api.customer.login');
+Route::middleware('auth:sanctum')->get('/logout', [AuthController::class, 'logout'])->name('api.customer.logout');
 Route::post('/register', [AuthController::class, 'register'])->name('api.customer.register');
-Route::get('/user', [AuthController::class, 'getUser'])->name('api.customer.user');
+// Route::get('/user', [AuthController::class, 'getUser'])->name('api.customer.user');
 
 Route::get('/absen', [AbsenController::class, 'index'])->name('api.absen.index');
 Route::get('/karyawan', [AbsenController::class, 'getKaryawan'])->name('api.absen.getkaryawan');

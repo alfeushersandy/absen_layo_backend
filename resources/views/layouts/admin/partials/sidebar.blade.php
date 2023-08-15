@@ -55,7 +55,7 @@
                         </span>
                     </a>
                 </li>
-                @role('super-admin')
+                @role('super-admin|admin')
                     <div class="hr-text hr-text-left ml-2 mb-2 mt-2">Master Data</div>
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('admin.departemen*') ? 'active' : '' }}"
@@ -134,7 +134,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Route::is('admin.jenisalembur*') ? 'active' : '' }}"
+                        <a class="nav-link {{ Route::is('admin.jenislembur*') ? 'active' : '' }}"
                             href="{{route('admin.jenislembur.index')}}">
                             <span class="nav-link-icon d-md-none d-lg-inline-block mr-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-database"
